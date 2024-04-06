@@ -30,6 +30,8 @@ struct MapView: View {
     }()
     
     let locations: [NationalParkLocation] = Bundle.main.decode(file: "locations.json")
+    @State var lat: Double = 0.0
+    @State var lon: Double = 0.0
 
     
     //MARK: - BODY
@@ -40,22 +42,87 @@ struct MapView: View {
         
         Map(position: $regionPosition){
             ForEach(locations) { location in
-//                Annotation(location.name, coordinate: location.location){
-//                    
-//                }
+
+                
+                // MARKER
 //                Marker(location.name
 //                   , coordinate: location.location)
 //                    .tint(Color.orange)
+                
+                // BASIC ANNOTATION
+//                Annotation(location.name, coordinate: location.location){
+//                    Image("logo")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 25, height: 25)
+//                }
+                
+                //CUSTOM ADVANCED ANNOTATION
                 Annotation(location.name, coordinate: location.location){
-                    Image("logo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 25, height: 25)
+                    MapAnnotationView(location: location)
                 }
             
                
             }
+        }//:MAP
+
+        .onMapCameraChange (frequency: .continuous){
+            context in
+                print("\(context.camera.centerCoordinate)")
+            lat = context.camera.centerCoordinate.latitude
+            lon = context.camera.centerCoordinate.longitude
+            
+            
         }
+        .overlay(
+            HStack(alignment: .center, spacing: 12){
+                Image("compass")
+                    .resizable()
+                    .scaledToFit()
+                .frame(width: 48, height: 48, alignment: .center)
+                VStack(alignment: .leading, spacing: 3){
+                    HStack{
+                        Text("Latitude")
+                            .font(.footnote)
+                            .fontWeight(.bold)
+                            .foregroundColor(.accentColor)
+                        Spacer()
+//                        Text("\(regionPosition.region!.center.latitude)")
+//                            .font(.footnote)
+//                            .foregroundColor(.white)
+                        Text("\(lat)")
+                            .font(.footnote)
+                            .foregroundColor(.white)
+                        
+                    }
+                    Divider()
+                    HStack{
+                        Text("Longitude")
+                            .font(.footnote)
+                            .fontWeight(.bold)
+                            .foregroundColor(.accentColor)
+                        Spacer()
+//                        Text("\(regionPosition.region!.center.longitude)")
+//                            .font(.footnote)
+//                            .foregroundColor(.white)
+                        Text("\(lon)")
+                            .font(.footnote)
+                            .foregroundColor(.white)
+                        
+                    }
+                }
+            }//: HSTACK
+            .padding(.vertical, 12)
+            .padding(.horizontal, 16)
+            .background(
+                Color.black
+                    .cornerRadius(8)
+                    .opacity(0.6)
+            )
+            .padding()
+            ,alignment: .topLeading
+        
+        )
         
         
         
