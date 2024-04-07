@@ -123,11 +123,6 @@ struct MapView: View {
             ,alignment: .topLeading
         
         )
-        
-        
-        
-        
-        Text("MapView")
     }
 }
 
